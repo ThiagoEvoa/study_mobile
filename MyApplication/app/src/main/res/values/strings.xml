@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="fab_content_description">Add person</string>
+    <string name="txt_person_name">Name: </string>
+    <string name="btn_save">Save</string>
+    <string name="dialog_save">Person saved.</string>
+    <string name="dialog_information">Information</string>
+    <string name="dialog_delete">Person deleted.</string>
+    <string name="dialog_update">Person updated.</string>
+    <string name="dialog_error">Error</string>
+    <string name="dialog_error_message">Something went wrong.</string>
+    <string name="txt_empty_list">Nothing here =/</string>
+</resources>
