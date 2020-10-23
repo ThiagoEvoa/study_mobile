@@ -38,7 +38,11 @@ class SplashFragment : Fragment() {
         val navigationController = Navigation.findNavController(view)
 
         Handler().postDelayed({
-            navigationController.navigate(R.id.action_splashFragment_to_mainFragment)
+            navigationController.navigate(
+                R.id.action_splashFragment_to_mainFragment,
+                null,
+                NavOptions.Builder().setPopUpTo(R.id.splashFragment, true).build()
+            )
             uiUtil.removeFullScreen(requireActivity())
             uiUtil.showActionBar(requireActivity())
         }, 3000)

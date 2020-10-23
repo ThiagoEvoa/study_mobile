@@ -14,30 +14,36 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.data.model.PersonModel
 import com.example.myapplication.presentation.presenter.PersonViewModel
-import com.example.myapplication.presentation.ui.activity.MainActivity
 import com.example.myapplication.presentation.ui.adapter.PersonAdapter
+import com.example.myapplication.util.UiUtil
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
+import kotlinx.android.synthetic.main.item_person.*
 
 class MainFragment : Fragment(), View.OnClickListener {
     private lateinit var personViewModel: PersonViewModel
     private lateinit var navigationController: NavController
+    private val uiUtil = UiUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        personViewModel = ViewModelProviders.of(requireActivity()).get(PersonViewModel()::class.java)
+        uiUtil.hideBackButton(this)
+        personViewModel =
+            ViewModelProviders.of(requireActivity()).get(PersonViewModel()::class.java)
         personViewModel.contextLiveData.value = requireActivity()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        setHasOptionsMenu(false)
-        val view =  inflater.inflate(R.layout.fragment_main, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_main, container, false)
 
         personViewModel.personLiveData.observe(viewLifecycleOwner, {
             setAdapter(it, view)
 
-            when{
+            when {
                 it.size > 0 -> {
                     txt_empty_list.visibility = View.GONE
                 }
@@ -51,7 +57,6 @@ class MainFragment : Fragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-
         personViewModel.retrievePeople()
     }
 
@@ -68,19 +73,26 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        when(view){
+        when (view) {
             floating_action_button -> {
                 navigationController.navigate(R.id.action_mainFragment_to_detailFragment)
             }
         }
     }
 
-    fun onItemClick(person: PersonModel){
-        val navOptions: NavOptions = NavOptions.Builder().setPopUpTo(R.id.action_mainFragment_to_detailFragment, false).build()
-        navigationController.navigate(R.id.action_mainFragment_to_detailFragment, bundleOf("person" to person), navOptions)
-    }
+    fun onItemClick(person: PersonModel, view: View) {
+        when (view) {
+            layout_item_person -> {
+                navigationController.navigate(
+                    R.id.action_mainFragment_to_detailFragment,
+                    bundleOf("person" to person),
+                    NavOptions.Builder().setPopUpTo(R.id.mainFragment, false).build()
+                )
+            }
+            btn_delete -> {
+                personViewModel.deletePerson(person)
+            }
+        }
 
-    fun onItemLongClick(person: PersonModel){
-        personViewModel.deletePerson(person)
     }
 }

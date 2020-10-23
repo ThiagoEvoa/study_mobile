@@ -5,9 +5,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
@@ -16,21 +13,21 @@ import androidx.navigation.Navigation
 import com.example.myapplication.R
 import com.example.myapplication.data.model.PersonModel
 import com.example.myapplication.presentation.presenter.PersonViewModel
-import com.example.myapplication.presentation.ui.activity.MainActivity
+import com.example.myapplication.util.UiUtil
 import kotlinx.android.synthetic.main.fragment_detail.*
 
-class DetailFragment : Fragment(), View.OnClickListener{
-    lateinit var personModel: PersonModel
+class DetailFragment : Fragment(), View.OnClickListener {
+    private lateinit var personModel: PersonModel
     private lateinit var personViewModel: PersonViewModel
     private lateinit var navigationController: NavController
+    private var uiUtil = UiUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        uiUtil.showBackButton(this)
         personViewModel =
             ViewModelProviders.of(requireActivity()).get(PersonViewModel()::class.java)
         personViewModel.contextLiveData.value = requireActivity()
-        (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -54,12 +51,18 @@ class DetailFragment : Fragment(), View.OnClickListener{
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navOptions: NavOptions = NavOptions.Builder().setPopUpTo(R.id.action_detailFragment_to_mainFragment, true).build()
-        navigationController.navigate(R.id.action_detailFragment_to_mainFragment, null, navOptions)
+        navigationController.navigate(
+            R.id.action_detailFragment_to_mainFragment,
+            null,
+            NavOptions.Builder().setPopUpTo(R.id.mainFragment, true)
+                .build()
+        )
         return true
     }
 
     override fun onClick(view: View?) {
+        uiUtil.hideKeyboard(this)
+
         when (view) {
             btn_save -> {
                 if (::personModel.isInitialized) {

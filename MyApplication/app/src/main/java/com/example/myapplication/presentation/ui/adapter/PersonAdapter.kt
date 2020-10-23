@@ -3,6 +3,7 @@ package com.example.myapplication.presentation.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -26,16 +27,16 @@ class PersonAdapter(private val fragment: Fragment, private val objects: Mutable
         val personModel = objects[position]
         holder.personName.text = personModel.name
         holder.layoutItemPerson.setOnClickListener {
-            (fragment as MainFragment).onItemClick(personModel)
+            (fragment as MainFragment).onItemClick(personModel, holder.layoutItemPerson)
         }
-        holder.layoutItemPerson.setOnLongClickListener {
-            (fragment as MainFragment).onItemLongClick(personModel)
-            true
+        holder.btnDelete.setOnClickListener {
+            (fragment as MainFragment).onItemClick(personModel, holder.btnDelete)
         }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var personName: TextView = view.txt_person_name
         var layoutItemPerson: LinearLayout = view.layout_item_person
+        var btnDelete: Button = view.btn_delete
     }
 }
